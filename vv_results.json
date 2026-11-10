@@ -1,0 +1,636 @@
+{
+ "tests": [
+  {
+   "id": "V1",
+   "stage": "Stage 1",
+   "reqs": "SPR2.1, SPR3.1, SPR1.5",
+   "risks": "RSK1.5",
+   "what": "18 real nights on default settings, plus 6 deliberately broken inputs",
+   "result": "18/18 valid nights accepted; 6/6 broken inputs handled with a clear message",
+   "status": "PASS"
+  },
+  {
+   "id": "V1b",
+   "stage": "Stage 1",
+   "reqs": "SPR2.1, SPR3.4",
+   "risks": "RSK1.5",
+   "what": "ECG/HRV module on reference ECGs with known heart rate (Sleep-EDF has no ECG; repeat on HMC)",
+   "result": "Detected heart rate within 2 bpm of truth in 3/3 signals",
+   "status": "PASS"
+  },
+  {
+   "id": "V2",
+   "stage": "Stage 1",
+   "reqs": "SPR3.4, SPR1.3",
+   "risks": "RSK1.1, RSK1.2, RSK1.5",
+   "what": "40 hand-built hypnograms with known REM latency, including edge cases",
+   "result": "40/40 exact to the epoch; nights without REM return 'none'",
+   "status": "PASS"
+  },
+  {
+   "id": "V3",
+   "stage": "Stage 1",
+   "reqs": "SPR2.1, SPR3.4",
+   "risks": "RSK1.1, RSK1.2",
+   "what": "YASA staging vs technician scoring, 7 nights aged 60+ (18 nights in total)",
+   "result": "Agreement 76.0% (95% CI 70.8%-80.0%), kappa 0.66, REM F1 0.73",
+   "status": "FAIL"
+  },
+  {
+   "id": "V4",
+   "stage": "Stage 1",
+   "reqs": "SPR3.4, SPR1.3",
+   "risks": "RSK1.1, RSK1.2",
+   "what": "REM latency from pipeline vs technician scoring, 18 nights",
+   "result": "Bias -89.7 min, 95% limits -308.1 to 128.7 min, ICC 0.07; 12 nights >15 min out",
+   "status": "FAIL"
+  },
+  {
+   "id": "V5",
+   "stage": "Stage 1",
+   "reqs": "SPR3.4",
+   "risks": "RSK1.5",
+   "what": "Pipeline sleep measures, 7 nights aged 60+, vs reference ranges",
+   "result": "3/5 group means inside the reference range (ranges must be cited before reporting)",
+   "status": "FAIL"
+  },
+  {
+   "id": "S2",
+   "stage": "Stage 2",
+   "reqs": "SPR3.4",
+   "risks": "RSK1.3",
+   "what": "Positive control: does the statistics code recover known effects of age on sleep?",
+   "result": "Deep sleep N3 falls with age (rho -0.37, p 0.13); Sleep efficiency falls with age (rho -0.65, p 0.00327); Wake after sleep onset rises with age (rho +0.57, p 0.0126)",
+   "status": "PASS"
+  },
+  {
+   "id": "S3",
+   "stage": "Stage 3",
+   "reqs": "SPR2.2",
+   "risks": "RSK1.3",
+   "what": "Autoencoder (6-number bottleneck) trained on 17968 epochs from 14 nights, no labels; tested on 4 unseen nights",
+   "result": "Latent features predict sleep stage with balanced accuracy 60% (chance 20%); rebuild error 0.073 vs PCA 0.086, so autoencoder kept; k-means chose k=4",
+   "status": "PASS"
+  },
+  {
+   "id": "S4a",
+   "stage": "Stage 4",
+   "reqs": "SPR3.2",
+   "risks": "RSK1.3",
+   "what": "300 sets of RANDOM labels on the real cluster structure (no true effect)",
+   "result": "False-positive rate 4.0% at n=120 (6.0% at the real n=18); must not exceed 5% (allowing simulation error, at most 8%)",
+   "status": "PASS"
+  },
+  {
+   "id": "S4b",
+   "stage": "Stage 4",
+   "reqs": "SPR3.2",
+   "risks": "RSK1.1",
+   "what": "200 sets of labels with a PLANTED effect (one cluster 65% vs 15% anxious)",
+   "result": "Detected in 100% of runs at n=120 (32% at the real n=18, which shows why the clinical study needs a properly sized cohort)",
+   "status": "PASS"
+  },
+  {
+   "id": "S5a",
+   "stage": "Stage 5",
+   "reqs": "SPR3.2",
+   "risks": "RSK2.1",
+   "what": "Leakage check: participants in training vs test folds",
+   "result": "0 participants appeared in both training and test folds",
+   "status": "PASS"
+  },
+  {
+   "id": "S5b",
+   "stage": "Stage 5",
+   "reqs": "SPR3.2",
+   "risks": "RSK1.2",
+   "what": "Elastic-net model with 60 sets of RANDOM labels (no true effect)",
+   "result": "Mean cross-validated AUROC 0.46 (expected 0.50)",
+   "status": "PASS"
+  },
+  {
+   "id": "S5c",
+   "stage": "Stage 5",
+   "reqs": "SPR3.2",
+   "risks": "RSK1.1",
+   "what": "Elastic-net model with a PLANTED link to sleep efficiency and sleep onset",
+   "result": "Cross-validated AUROC 0.88",
+   "status": "PASS"
+  },
+  {
+   "id": "S6",
+   "stage": "Stage 6",
+   "reqs": "SPR3.5",
+   "risks": "RSK2.1",
+   "what": "Sensors removed in software from the same real nights; re-staged and compared with the technician",
+   "result": "EEG + EOG (headband) kappa 0.74; Frontal EEG only kappa 0.72; Parietal EEG only kappa 0.65 (full montage 0.72). Best reduced set: EEG + EOG (headband)",
+   "status": "PASS"
+  }
+ ],
+ "meta": {
+  "synthetic": false,
+  "nights": [
+   {
+    "id": "SC4001",
+    "age": 33,
+    "sex": "F"
+   },
+   {
+    "id": "SC4031",
+    "age": 26,
+    "sex": "F"
+   },
+   {
+    "id": "SC4061",
+    "age": 31,
+    "sex": "F"
+   },
+   {
+    "id": "SC4091",
+    "age": 25,
+    "sex": "F"
+   },
+   {
+    "id": "SC4121",
+    "age": 26,
+    "sex": "M"
+   },
+   {
+    "id": "SC4151",
+    "age": 31,
+    "sex": "M"
+   },
+   {
+    "id": "SC4181",
+    "age": 28,
+    "sex": "M"
+   },
+   {
+    "id": "SC4211",
+    "age": 51,
+    "sex": "F"
+   },
+   {
+    "id": "SC4241",
+    "age": 54,
+    "sex": "F"
+   },
+   {
+    "id": "SC4271",
+    "age": 54,
+    "sex": "F"
+   },
+   {
+    "id": "SC4301",
+    "age": 50,
+    "sex": "M"
+   },
+   {
+    "id": "SC4331",
+    "age": 60,
+    "sex": "M"
+   },
+   {
+    "id": "SC4421",
+    "age": 69,
+    "sex": "F"
+   },
+   {
+    "id": "SC4451",
+    "age": 66,
+    "sex": "F"
+   },
+   {
+    "id": "SC4481",
+    "age": 66,
+    "sex": "F"
+   },
+   {
+    "id": "SC4511",
+    "age": 70,
+    "sex": "M"
+   },
+   {
+    "id": "SC4541",
+    "age": 73,
+    "sex": "M"
+   },
+   {
+    "id": "SC4571",
+    "age": 66,
+    "sex": "M"
+   }
+  ],
+  "runtime_min": 15.5,
+  "yasa": "0.8.1",
+  "mne": "1.13.2"
+ },
+ "v1_rows": [
+  [
+   "Missing EEG",
+   "Stopped with a clear error: Required EEG channel 'EEG Fpz-Cz' is missing: sleep staging is impossible.",
+   true
+  ],
+  [
+   "Missing EOG and EMG",
+   "Ran, and named the features it could not compute: REM density (EOG); EOG-assisted staging; REM muscle activity (EMG); EMG-assisted staging",
+   true
+  ],
+  [
+   "Cut-short night (1 h)",
+   "Stopped with a clear error: Recording is 1.0 h; at least 4 h is required.",
+   true
+  ],
+  [
+   "Wrong sampling rate (20 Hz)",
+   "Stopped with a clear error: Sampling rate 20 Hz is below the 50 Hz minimum.",
+   true
+  ],
+  [
+   "No annotations",
+   "Stopped with a clear error: No sleep-stage annotations found: technician comparison is impossible.",
+   true
+  ],
+  [
+   "File is not EDF",
+   "Stopped with a clear error: File could not be read as EDF/EDF+.",
+   true
+  ]
+ ],
+ "hrv_rows": [
+  [
+   55,
+   55.1,
+   81.8,
+   true
+  ],
+  [
+   70,
+   70.1,
+   36.7,
+   true
+  ],
+  [
+   90,
+   90.1,
+   19.2,
+   true
+  ]
+ ],
+ "v2_rows": [
+  [
+   "no REM at all",
+   "none",
+   "none",
+   true
+  ],
+  [
+   "REM straight after onset",
+   "0.0",
+   "0.0",
+   true
+  ],
+  [
+   "wake before first REM",
+   "30.0",
+   "30.0",
+   true
+  ],
+  [
+   "R&K stage 4 present",
+   "20.0",
+   "20.0",
+   true
+  ],
+  [
+   "never falls asleep",
+   "none",
+   "none",
+   true
+  ],
+  [
+   "unscored epochs at start",
+   "4.0",
+   "4.0",
+   true
+  ]
+ ],
+ "v3_rows": [
+  {
+   "id": "SC4001",
+   "age": 33,
+   "acc": 0.8299643281807372,
+   "kappa": 0.778011791329644,
+   "rem_f1": 0.7744360902255639
+  },
+  {
+   "id": "SC4031",
+   "age": 26,
+   "acc": 0.8256302521008403,
+   "kappa": 0.7512337409860168,
+   "rem_f1": 0.9023861171366594
+  },
+  {
+   "id": "SC4061",
+   "age": 31,
+   "acc": 0.8683274021352313,
+   "kappa": 0.8162709920891265,
+   "rem_f1": 0.905829596412556
+  },
+  {
+   "id": "SC4091",
+   "age": 25,
+   "acc": 0.7871024734982333,
+   "kappa": 0.6897483865464987,
+   "rem_f1": 0.7114624505928854
+  },
+  {
+   "id": "SC4121",
+   "age": 26,
+   "acc": 0.8212927756653993,
+   "kappa": 0.7459527990330135,
+   "rem_f1": 0.8402366863905325
+  },
+  {
+   "id": "SC4151",
+   "age": 31,
+   "acc": 0.8665966386554622,
+   "kappa": 0.823296083996621,
+   "rem_f1": 0.9
+  },
+  {
+   "id": "SC4181",
+   "age": 28,
+   "acc": 0.7894190871369294,
+   "kappa": 0.7096579402229954,
+   "rem_f1": 0.6978193146417445
+  },
+  {
+   "id": "SC4211",
+   "age": 51,
+   "acc": 0.8555133079847909,
+   "kappa": 0.7827967102923802,
+   "rem_f1": 0.732484076433121
+  },
+  {
+   "id": "SC4241",
+   "age": 54,
+   "acc": 0.8702928870292888,
+   "kappa": 0.7980440859467353,
+   "rem_f1": 0.8140161725067385
+  },
+  {
+   "id": "SC4271",
+   "age": 54,
+   "acc": 0.8450570342205324,
+   "kappa": 0.7828763602199144,
+   "rem_f1": 0.9166666666666666
+  },
+  {
+   "id": "SC4301",
+   "age": 50,
+   "acc": 0.77502691065662,
+   "kappa": 0.6750274909660585,
+   "rem_f1": 0.7055016181229773
+  },
+  {
+   "id": "SC4331",
+   "age": 60,
+   "acc": 0.8177966101694916,
+   "kappa": 0.7051698059075714,
+   "rem_f1": 0.7652582159624414
+  },
+  {
+   "id": "SC4421",
+   "age": 69,
+   "acc": 0.824203821656051,
+   "kappa": 0.763544411000107,
+   "rem_f1": 0.7133333333333334
+  },
+  {
+   "id": "SC4451",
+   "age": 66,
+   "acc": 0.7640728476821192,
+   "kappa": 0.7002264758151518,
+   "rem_f1": 0.8344370860927153
+  },
+  {
+   "id": "SC4481",
+   "age": 66,
+   "acc": 0.7556762092793682,
+   "kappa": 0.639039988251982,
+   "rem_f1": 0.5838779956427015
+  },
+  {
+   "id": "SC4511",
+   "age": 70,
+   "acc": 0.6182152713891444,
+   "kappa": 0.48621298405466973,
+   "rem_f1": 0.8561151079136691
+  },
+  {
+   "id": "SC4541",
+   "age": 73,
+   "acc": 0.796037296037296,
+   "kappa": 0.686542299566608,
+   "rem_f1": 0.6124661246612466
+  },
+  {
+   "id": "SC4571",
+   "age": 66,
+   "acc": 0.7416462917685411,
+   "kappa": 0.6304287098797103,
+   "rem_f1": 0.7546468401486989
+  }
+ ],
+ "v3_summary": {
+  "acc": [
+   0.76,
+   0.708,
+   0.8
+  ],
+  "kappa": [
+   0.659,
+   0.597,
+   0.711
+  ],
+  "rem_f1": [
+   0.731,
+   0.657,
+   0.797
+  ]
+ },
+ "v3_summary_all": {
+  "acc": 0.803,
+  "kappa": 0.72,
+  "rem_f1": 0.779
+ },
+ "v3_per_stage_f1": {
+  "W": 0.883,
+  "N1": 0.281,
+  "N2": 0.844,
+  "N3": 0.804,
+  "REM": 0.776
+ },
+ "v4": {
+  "n": 18,
+  "bias": -89.7,
+  "loa": [
+   -308.1,
+   128.7
+  ],
+  "icc": 0.073,
+  "outliers": [
+   "SC4031 (-100 min)",
+   "SC4061 (-92 min)",
+   "SC4151 (-47 min)",
+   "SC4181 (-88 min)",
+   "SC4211 (-272 min)",
+   "SC4241 (-338 min)",
+   "SC4421 (-20 min)",
+   "SC4451 (-118 min)",
+   "SC4481 (-56 min)",
+   "SC4511 (-16 min)",
+   "SC4541 (-316 min)",
+   "SC4571 (-142 min)"
+  ]
+ },
+ "v5_rows": [
+  [
+   "TST (min)",
+   422.6,
+   "300-450",
+   true
+  ],
+  [
+   "SE (%)",
+   63.3,
+   "65-95",
+   false
+  ],
+  [
+   "REM (%)",
+   24.4,
+   "12-25",
+   true
+  ],
+  [
+   "N3 (%)",
+   13.4,
+   "0-20",
+   true
+  ],
+  [
+   "REM latency (min)",
+   45.7,
+   "50-150",
+   false
+  ]
+ ],
+ "s2_rows": [
+  [
+   "Deep sleep N3 (% of sleep)",
+   "falls",
+   -0.37,
+   0.1298196927077682,
+   false
+  ],
+  [
+   "Sleep efficiency (%)",
+   "falls",
+   -0.65,
+   0.0032664506491187797,
+   true
+  ],
+  [
+   "Wake after sleep onset (min)",
+   "rises",
+   0.57,
+   0.012578909938405373,
+   true
+  ]
+ ],
+ "s3": {
+  "n_epochs": 21940,
+  "features": [
+   "Fpz-Cz delta",
+   "Fpz-Cz theta",
+   "Fpz-Cz alpha",
+   "Fpz-Cz sigma",
+   "Fpz-Cz beta",
+   "Pz-Oz delta",
+   "Pz-Oz theta",
+   "Pz-Oz alpha",
+   "Pz-Oz sigma",
+   "Pz-Oz beta",
+   "EOG slow",
+   "EOG fast",
+   "EMG power"
+  ],
+  "latent_dim": 6,
+  "mse_ae": 0.0732,
+  "mse_pca": 0.0861,
+  "stage_bacc": 0.599,
+  "sil": {
+   "2": 0.185,
+   "3": 0.202,
+   "4": 0.206,
+   "5": 0.187
+  },
+  "best_k": 4,
+  "choice": "autoencoder kept"
+ },
+ "s4": {
+  "real": {
+   "n": 18,
+   "fpr": 0.06,
+   "power": 0.325
+  },
+  "study": {
+   "n": 120,
+   "fpr": 0.04,
+   "power": 1.0
+  },
+  "k": 4
+ },
+ "s5": {
+  "null_mean": 0.462,
+  "null_sd": 0.182,
+  "planted_auc": 0.878,
+  "leak": 0,
+  "n": 18
+ },
+ "s6_rows": [
+  [
+   "EEG + EOG (headband)",
+   0.744,
+   -17.2,
+   [
+    -111.0,
+    76.6
+   ],
+   0.898
+  ],
+  [
+   "Frontal EEG only",
+   0.719,
+   -19.7,
+   [
+    -102.8,
+    63.4
+   ],
+   0.907
+  ],
+  [
+   "Parietal EEG only",
+   0.654,
+   -86.9,
+   [
+    -335.3,
+    161.5
+   ],
+   -0.041
+  ]
+ ],
+ "s6_full_kappa": 0.72
+}
